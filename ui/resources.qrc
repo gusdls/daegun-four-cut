@@ -1,0 +1,7 @@
+<RCC>
+  <qresource>
+    <file>assets/camera.png</file>
+    <file>assets/background.png</file>
+    <file>assets/logo.png</file>
+  </qresource>
+</RCC>
