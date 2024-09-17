@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'main_window.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.7.2
+## Created by: Qt User Interface Compiler version 6.7.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -29,7 +29,9 @@ class Ui_MainWindow(object):
         font.setFamilies([u".AppleSystemUIFont"])
         MainWindow.setFont(font)
         MainWindow.setAutoFillBackground(False)
-        MainWindow.setStyleSheet(u"")
+        MainWindow.setStyleSheet(u"#MainWindow {\n"
+"	background-color: #fcf5c7;\n"
+"}")
         MainWindow.setDocumentMode(False)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
@@ -37,10 +39,219 @@ class Ui_MainWindow(object):
         self.gridLayout_2.setSpacing(0)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
         self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.mainWidget = QWidget(self.centralwidget)
+        self.mainWidget.setObjectName(u"mainWidget")
+        self.mainWidget.setStyleSheet(u"QWidget#mainWidget {\n"
+"	background: url(:/assets/background.png) no-repeat center;\n"
+"}")
+        self.verticalLayout_3 = QVBoxLayout(self.mainWidget)
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.stackedWidget = QStackedWidget(self.mainWidget)
+        self.stackedWidget.setObjectName(u"stackedWidget")
+        self.stackedWidget.setFont(font)
+        self.stackedWidget.setStyleSheet(u"")
+        self.cameraPage = QWidget()
+        self.cameraPage.setObjectName(u"cameraPage")
+        self.gridLayout_3 = QGridLayout(self.cameraPage)
+        self.gridLayout_3.setObjectName(u"gridLayout_3")
+        self.gridLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.label = QLabel(self.cameraPage)
+        self.label.setObjectName(u"label")
+        self.label.setStyleSheet(u"color: black;")
+
+        self.gridLayout_3.addWidget(self.label, 1, 0, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+
+        self.videoLabel = QLabel(self.cameraPage)
+        self.videoLabel.setObjectName(u"videoLabel")
+        font1 = QFont()
+        font1.setPointSize(28)
+        self.videoLabel.setFont(font1)
+        self.videoLabel.setStyleSheet(u"")
+        self.videoLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.gridLayout_3.addWidget(self.videoLabel, 0, 0, 1, 1)
+
+        self.gridLayout_3.setRowStretch(0, 1)
+        self.stackedWidget.addWidget(self.cameraPage)
+        self.selectPage = QWidget()
+        self.selectPage.setObjectName(u"selectPage")
+        self.selectPage.setEnabled(True)
+        self.gridLayout_4 = QGridLayout(self.selectPage)
+        self.gridLayout_4.setObjectName(u"gridLayout_4")
+        self.gridLayout_4.setSizeConstraint(QLayout.SizeConstraint.SetDefaultConstraint)
+        self.gridLayout_4.setContentsMargins(0, 0, 0, 0)
+        self.selectButton = QPushButton(self.selectPage)
+        self.selectButton.setObjectName(u"selectButton")
+        self.selectButton.setEnabled(True)
+        self.selectButton.setMinimumSize(QSize(110, 40))
+        self.selectButton.setMaximumSize(QSize(110, 40))
+        font2 = QFont()
+        font2.setPointSize(14)
+        font2.setBold(True)
+        self.selectButton.setFont(font2)
+        self.selectButton.setStyleSheet(u"QPushButton {\n"
+"	background-color: #ffee93;\n"
+"	color: white;\n"
+"	border: none;\n"
+"	border-radius: 4px;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"	background-color: #ffeb7f;\n"
+"}\n"
+"\n"
+"QPushButton:disabled {\n"
+"	background-color: darkgray;\n"
+"}")
+        self.selectButton.setCheckable(False)
+        self.selectButton.setChecked(False)
+        self.selectButton.setAutoExclusive(False)
+        self.selectButton.setAutoDefault(False)
+        self.selectButton.setFlat(False)
+
+        self.gridLayout_4.addWidget(self.selectButton, 1, 1, 1, 1)
+
+        self.horizontalSpacer = QSpacerItem(617, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_4.addItem(self.horizontalSpacer, 1, 0, 1, 1)
+
+        self.widget = QWidget(self.selectPage)
+        self.widget.setObjectName(u"widget")
+        self.gridLayout_5 = QGridLayout(self.widget)
+        self.gridLayout_5.setObjectName(u"gridLayout_5")
+        self.gridLayout_5.setContentsMargins(0, 0, 0, 0)
+        self.selectLayout = QGridLayout()
+        self.selectLayout.setSpacing(9)
+        self.selectLayout.setObjectName(u"selectLayout")
+
+        self.gridLayout_5.addLayout(self.selectLayout, 0, 0, 1, 1)
+
+
+        self.gridLayout_4.addWidget(self.widget, 0, 0, 1, 2)
+
+        self.stackedWidget.addWidget(self.selectPage)
+        self.resultPage = QWidget()
+        self.resultPage.setObjectName(u"resultPage")
+        self.gridLayout_6 = QGridLayout(self.resultPage)
+        self.gridLayout_6.setObjectName(u"gridLayout_6")
+        self.gridLayout_6.setContentsMargins(0, 0, 0, 0)
+        self.widget_2 = QWidget(self.resultPage)
+        self.widget_2.setObjectName(u"widget_2")
+        self.widget_2.setStyleSheet(u"QPushButton {\n"
+"	background-color: #ffc09f;\n"
+"	border: 3px solid #ffc09f;\n"
+"	border-radius: 8px;\n"
+"}\n"
+"\n"
+"QPushButton:checked {\n"
+"	background-color: #ffb28a;\n"
+"}")
+        self.gridLayout_8 = QGridLayout(self.widget_2)
+        self.gridLayout_8.setObjectName(u"gridLayout_8")
+        self.gridLayout_8.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_4 = QVBoxLayout()
+        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.verticalLayout_4.setSizeConstraint(QLayout.SizeConstraint.SetDefaultConstraint)
+        self.filterButton_1 = QPushButton(self.widget_2)
+        self.filterButton_1.setObjectName(u"filterButton_1")
+        self.filterButton_1.setMinimumSize(QSize(80, 80))
+        self.filterButton_1.setMaximumSize(QSize(80, 80))
+        font3 = QFont()
+        font3.setPointSize(16)
+        font3.setBold(True)
+        self.filterButton_1.setFont(font3)
+        self.filterButton_1.setCheckable(True)
+        self.filterButton_1.setChecked(True)
+        self.filterButton_1.setAutoExclusive(True)
+
+        self.verticalLayout_4.addWidget(self.filterButton_1)
+
+        self.filterButton_2 = QPushButton(self.widget_2)
+        self.filterButton_2.setObjectName(u"filterButton_2")
+        self.filterButton_2.setMinimumSize(QSize(80, 80))
+        self.filterButton_2.setMaximumSize(QSize(80, 80))
+        self.filterButton_2.setFont(font3)
+        self.filterButton_2.setCheckable(True)
+        self.filterButton_2.setAutoExclusive(True)
+
+        self.verticalLayout_4.addWidget(self.filterButton_2)
+
+        self.filterButton_3 = QPushButton(self.widget_2)
+        self.filterButton_3.setObjectName(u"filterButton_3")
+        self.filterButton_3.setMinimumSize(QSize(80, 80))
+        self.filterButton_3.setMaximumSize(QSize(80, 80))
+        self.filterButton_3.setFont(font3)
+        self.filterButton_3.setCheckable(True)
+        self.filterButton_3.setAutoExclusive(True)
+
+        self.verticalLayout_4.addWidget(self.filterButton_3)
+
+
+        self.gridLayout_8.addLayout(self.verticalLayout_4, 0, 0, 1, 1)
+
+
+        self.gridLayout_6.addWidget(self.widget_2, 0, 0, 1, 1)
+
+        self.widget_3 = QWidget(self.resultPage)
+        self.widget_3.setObjectName(u"widget_3")
+        self.gridLayout = QGridLayout(self.widget_3)
+        self.gridLayout.setObjectName(u"gridLayout")
+        self.gridLayout.setContentsMargins(0, 0, 0, 0)
+        self.resultLabel = QLabel(self.widget_3)
+        self.resultLabel.setObjectName(u"resultLabel")
+        self.resultLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.gridLayout.addWidget(self.resultLabel, 0, 0, 1, 1)
+
+
+        self.gridLayout_6.addWidget(self.widget_3, 0, 1, 1, 1)
+
+        self.widget_4 = QWidget(self.resultPage)
+        self.widget_4.setObjectName(u"widget_4")
+        self.gridLayout_7 = QGridLayout(self.widget_4)
+        self.gridLayout_7.setObjectName(u"gridLayout_7")
+        self.gridLayout_7.setContentsMargins(0, 0, 0, 0)
+        self.saveButton = QPushButton(self.widget_4)
+        self.saveButton.setObjectName(u"saveButton")
+        self.saveButton.setMinimumSize(QSize(110, 40))
+        self.saveButton.setMaximumSize(QSize(110, 40))
+        self.saveButton.setFont(font2)
+        self.saveButton.setStyleSheet(u"QPushButton {\n"
+"	background-color: #51D161;\n"
+"	color: white;\n"
+"	border: none;\n"
+"	border-radius: 4px;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"	background-color: #31BC44;\n"
+"}\n"
+"\n"
+"QPushButton:disabled {\n"
+"	background-color: darkgray;\n"
+"}")
+
+        self.gridLayout_7.addWidget(self.saveButton, 1, 0, 1, 1)
+
+        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.gridLayout_7.addItem(self.verticalSpacer_2, 0, 0, 1, 1)
+
+
+        self.gridLayout_6.addWidget(self.widget_4, 0, 2, 1, 1)
+
+        self.gridLayout_6.setColumnStretch(1, 1)
+        self.stackedWidget.addWidget(self.resultPage)
+
+        self.verticalLayout_3.addWidget(self.stackedWidget)
+
+
+        self.gridLayout_2.addWidget(self.mainWidget, 0, 1, 1, 1)
+
         self.sidebar = QWidget(self.centralwidget)
         self.sidebar.setObjectName(u"sidebar")
         self.sidebar.setStyleSheet(u"QWidget {\n"
-"	background-color: #FFEE93;\n"
+"	background-color: #ffee93;\n"
 "	padding-right: 10px;\n"
 "}\n"
 "\n"
@@ -66,7 +277,7 @@ class Ui_MainWindow(object):
 "\n"
 "QPushButton:checked {\n"
 "	background-color: white;\n"
-"	color: #FFEE93;\n"
+"	color: #ffee93;\n"
 "	font-weight: bold;\n"
 "}")
         self.verticalLayout_2 = QVBoxLayout(self.sidebar)
@@ -83,11 +294,11 @@ class Ui_MainWindow(object):
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.navCamera = QPushButton(self.sidebar)
         self.navCamera.setObjectName(u"navCamera")
-        font1 = QFont()
-        font1.setFamilies([u".AppleSystemUIFont"])
-        font1.setPointSize(16)
-        font1.setBold(False)
-        self.navCamera.setFont(font1)
+        font4 = QFont()
+        font4.setFamilies([u".AppleSystemUIFont"])
+        font4.setPointSize(16)
+        font4.setBold(False)
+        self.navCamera.setFont(font4)
         self.navCamera.setStyleSheet(u"")
         self.navCamera.setCheckable(True)
         self.navCamera.setChecked(True)
@@ -95,12 +306,22 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.navCamera)
 
+        self.navSelect = QPushButton(self.sidebar)
+        self.navSelect.setObjectName(u"navSelect")
+        font5 = QFont()
+        font5.setFamilies([u".AppleSystemUIFont"])
+        font5.setPointSize(16)
+        self.navSelect.setFont(font5)
+        self.navSelect.setCheckable(True)
+        self.navSelect.setAutoExclusive(True)
+
+        self.verticalLayout.addWidget(self.navSelect)
+
         self.navResult = QPushButton(self.sidebar)
         self.navResult.setObjectName(u"navResult")
-        font2 = QFont()
-        font2.setFamilies([u".AppleSystemUIFont"])
-        font2.setPointSize(16)
-        self.navResult.setFont(font2)
+        font6 = QFont()
+        font6.setPointSize(16)
+        self.navResult.setFont(font6)
         self.navResult.setCheckable(True)
         self.navResult.setAutoExclusive(True)
 
@@ -115,14 +336,14 @@ class Ui_MainWindow(object):
 
         self.startButton = QPushButton(self.sidebar)
         self.startButton.setObjectName(u"startButton")
-        font3 = QFont()
-        font3.setFamilies([u".AppleSystemUIFont"])
-        font3.setPointSize(14)
-        font3.setBold(True)
-        self.startButton.setFont(font3)
+        font7 = QFont()
+        font7.setFamilies([u".AppleSystemUIFont"])
+        font7.setPointSize(14)
+        font7.setBold(True)
+        self.startButton.setFont(font7)
         self.startButton.setStyleSheet(u"")
         icon = QIcon()
-        icon.addFile(u":/assets/camera.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon.addFile(u":/assets/camera.png", QSize(), QIcon.Normal, QIcon.Off)
         self.startButton.setIcon(icon)
         self.startButton.setIconSize(QSize(20, 20))
 
@@ -131,109 +352,12 @@ class Ui_MainWindow(object):
 
         self.gridLayout_2.addWidget(self.sidebar, 0, 0, 1, 1)
 
-        self.mainWidget = QWidget(self.centralwidget)
-        self.mainWidget.setObjectName(u"mainWidget")
-        self.mainWidget.setStyleSheet(u"QWidget#mainWidget {\n"
-"	background: url(:/assets/background.png) no-repeat center;\n"
-"}")
-        self.verticalLayout_3 = QVBoxLayout(self.mainWidget)
-        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.stackedWidget = QStackedWidget(self.mainWidget)
-        self.stackedWidget.setObjectName(u"stackedWidget")
-        self.stackedWidget.setFont(font)
-        self.stackedWidget.setStyleSheet(u"")
-        self.cameraPage = QWidget()
-        self.cameraPage.setObjectName(u"cameraPage")
-        self.gridLayout_3 = QGridLayout(self.cameraPage)
-        self.gridLayout_3.setObjectName(u"gridLayout_3")
-        self.gridLayout_3.setContentsMargins(0, 0, 0, 0)
-        self.videoLabel = QLabel(self.cameraPage)
-        self.videoLabel.setObjectName(u"videoLabel")
-        font4 = QFont()
-        font4.setPointSize(28)
-        self.videoLabel.setFont(font4)
-        self.videoLabel.setStyleSheet(u"color: white;")
-        self.videoLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        self.gridLayout_3.addWidget(self.videoLabel, 0, 0, 1, 1)
-
-        self.copyLabel = QLabel(self.cameraPage)
-        self.copyLabel.setObjectName(u"copyLabel")
-        self.copyLabel.setStyleSheet(u"color: black;")
-
-        self.gridLayout_3.addWidget(self.copyLabel, 1, 0, 1, 1, Qt.AlignmentFlag.AlignHCenter)
-
-        self.gridLayout_3.setRowStretch(0, 1)
-        self.stackedWidget.addWidget(self.cameraPage)
-        self.resultPage = QWidget()
-        self.resultPage.setObjectName(u"resultPage")
-        self.resultPage.setEnabled(True)
-        self.gridLayout_4 = QGridLayout(self.resultPage)
-        self.gridLayout_4.setObjectName(u"gridLayout_4")
-        self.gridLayout_4.setSizeConstraint(QLayout.SizeConstraint.SetDefaultConstraint)
-        self.gridLayout_4.setContentsMargins(0, 0, 0, 0)
-        self.saveButton = QPushButton(self.resultPage)
-        self.saveButton.setObjectName(u"saveButton")
-        self.saveButton.setEnabled(True)
-        self.saveButton.setMinimumSize(QSize(110, 40))
-        self.saveButton.setMaximumSize(QSize(110, 40))
-        font5 = QFont()
-        font5.setPointSize(14)
-        font5.setBold(True)
-        self.saveButton.setFont(font5)
-        self.saveButton.setStyleSheet(u"QPushButton {\n"
-"	background-color: #FFEE93;\n"
-"	color: white;\n"
-"	border: none;\n"
-"	border-radius: 4px;\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"	background-color: #ffeb7f;\n"
-"}\n"
-"\n"
-"QPushButton:disabled {\n"
-"	background-color: darkgray;\n"
-"}")
-        self.saveButton.setCheckable(False)
-        self.saveButton.setChecked(False)
-        self.saveButton.setAutoExclusive(False)
-        self.saveButton.setAutoDefault(False)
-        self.saveButton.setFlat(False)
-
-        self.gridLayout_4.addWidget(self.saveButton, 1, 1, 1, 1)
-
-        self.horizontalSpacer = QSpacerItem(617, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_4.addItem(self.horizontalSpacer, 1, 0, 1, 1)
-
-        self.widget = QWidget(self.resultPage)
-        self.widget.setObjectName(u"widget")
-        self.gridLayout_5 = QGridLayout(self.widget)
-        self.gridLayout_5.setObjectName(u"gridLayout_5")
-        self.gridLayout_5.setContentsMargins(0, 0, 0, 0)
-        self.gridLayout = QGridLayout()
-        self.gridLayout.setSpacing(9)
-        self.gridLayout.setObjectName(u"gridLayout")
-
-        self.gridLayout_5.addLayout(self.gridLayout, 0, 0, 1, 1)
-
-
-        self.gridLayout_4.addWidget(self.widget, 0, 0, 1, 2)
-
-        self.stackedWidget.addWidget(self.resultPage)
-
-        self.verticalLayout_3.addWidget(self.stackedWidget)
-
-
-        self.gridLayout_2.addWidget(self.mainWidget, 0, 1, 1, 1)
-
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
 
         self.stackedWidget.setCurrentIndex(0)
-        self.saveButton.setDefault(False)
+        self.selectButton.setDefault(False)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -241,12 +365,18 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
+        self.label.setText(QCoreApplication.translate("MainWindow", u"\u00a9 2024 DaegunManga - All Rights Reserved.", None))
+        self.videoLabel.setText("")
+        self.selectButton.setText(QCoreApplication.translate("MainWindow", u"Next", None))
+        self.filterButton_1.setText(QCoreApplication.translate("MainWindow", u"F1", None))
+        self.filterButton_2.setText(QCoreApplication.translate("MainWindow", u"F2", None))
+        self.filterButton_3.setText(QCoreApplication.translate("MainWindow", u"F3", None))
+        self.resultLabel.setText("")
+        self.saveButton.setText(QCoreApplication.translate("MainWindow", u"Save", None))
         self.logoLabel.setText("")
         self.navCamera.setText(QCoreApplication.translate("MainWindow", u"Camera", None))
+        self.navSelect.setText(QCoreApplication.translate("MainWindow", u"Select", None))
         self.navResult.setText(QCoreApplication.translate("MainWindow", u"Result", None))
         self.startButton.setText(QCoreApplication.translate("MainWindow", u"Shot", None))
-        self.videoLabel.setText("")
-        self.copyLabel.setText(QCoreApplication.translate("MainWindow", u"\u00a9 2024 DaegunManga - All Rights Reserved.", None))
-        self.saveButton.setText(QCoreApplication.translate("MainWindow", u"Save", None))
     # retranslateUi
 

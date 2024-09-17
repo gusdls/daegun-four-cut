@@ -2,19 +2,22 @@ import os
 import sys
 
 import cv2
+import cvzone
+from cvzone.FaceDetectionModule import FaceDetector
+import numpy as np
+
 from PySide6.QtWidgets import QApplication, QMainWindow, QAbstractButton
 from PySide6.QtCore import Qt, QThread, Signal, Slot, QTimer, QUrl
 from PySide6.QtGui import QImage, QPixmap, QPainter, QPainterPath, QPen, QColor
 from PySide6.QtMultimedia import QSoundEffect
-import numpy as np
 
 from ui.main_window import Ui_MainWindow
 
 current_path = os.path.dirname(__file__)
-assets_folder = os.path.join(current_path, "assets")
+assets_dir = os.path.join(current_path, "assets")
 
 
-def convert_cv_to_qt(cv_img, height):
+def convert_cv_image_to_qt(cv_img, height):
     rgb_img = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
     h, w, ch = rgb_img.shape
     bytes_per_line = ch * w
@@ -23,45 +26,54 @@ def convert_cv_to_qt(cv_img, height):
     return QPixmap.fromImage(img_resized)
 
 
-class VideoThread(QThread):
-    change_frame_signal = Signal(np.ndarray)
+def adjust_scale(x, y, w, h, r):
+    x = x - int(w * r // 2)
+    y = y - int(h * r // 2)
+    w = int(w * (1 + r))
+    h = int(h * (1 + r))
+    return x, y, w, h
+
+
+class VideoCaptureThread(QThread):
+    frame_updated_signal = Signal(np.ndarray)
 
     def __init__(self):
         super().__init__()
-        self._running = True
+        self.running = True
 
     def run(self):
         cap = cv2.VideoCapture(0)
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
-        while self._running:
-            ret, frame = cap.read()
-            if not ret:
+        while self.running:
+            success, image = cap.read()
+            if not success:
                 continue
 
-            frame = frame[:, 360:920]
-            frame = cv2.flip(frame, 1)
-            self.change_frame_signal.emit(frame)
+            image = image[:, 360:920]
+            image = cv2.flip(image, 1)
+
+            self.frame_updated_signal.emit(image)
 
         cap.release()
 
     def stop(self):
-        self._running = False
+        self.running = False
         self.wait()
 
 
-class PhotoButton(QAbstractButton):
-    change_photos_signal = Signal(np.ndarray, bool)
+class SelectablePhotoButton(QAbstractButton):
+    photo_selection_changed_signal = Signal(np.ndarray, bool)
 
     def __init__(self, pixmap, index):
         super().__init__()
         self.pixmap = pixmap
-        self.index = index
-        self.select_index = None
+        self.photo_index = index
+        self.selected_photo_index = None
 
         self.setCheckable(True)
-        self.toggled.connect(self.handle_toggle)
+        self.toggled.connect(self.on_toggle)
 
     def paintEvent(self, event):
         painter = QPainter(self)
@@ -86,7 +98,7 @@ class PhotoButton(QAbstractButton):
             painter.drawText(
                 event.rect(),
                 Qt.AlignmentFlag.AlignCenter,
-                str(self.select_index)
+                str(self.selected_photo_index)
             )
         
         painter.end()
@@ -94,20 +106,20 @@ class PhotoButton(QAbstractButton):
     def sizeHint(self):
         return self.pixmap.size()
     
-    def handle_toggle(self, checked):
-        self.change_photos_signal.emit(self.index, checked)
+    def on_toggle(self, checked):
+        self.photo_selection_changed_signal.emit(self.photo_index, checked)
         self.update()
 
-    def setSelectIndex(self, value):
-        self.select_index = value
+    def set_selected_index(self, value):
+        self.selected_photo_index = value
         self.update()
 
 
 class FourCutWindow(QMainWindow, Ui_MainWindow):
     total_photos = 8
     total_cuts = 4
-    shot_interval = 5000
-    number_of_columns = 4
+    photo_shot_interval = 3000
+    column_count = 4
 
     def __init__(self):
         super().__init__()
@@ -115,57 +127,71 @@ class FourCutWindow(QMainWindow, Ui_MainWindow):
         self.setWindowTitle("2024 대건네컷")
 
         self.navCamera.clicked.connect(self.switch_to_camera_page)
+        self.navSelect.clicked.connect(self.switch_to_select_page)
         self.navResult.clicked.connect(self.switch_to_result_page)
-        self.startButton.clicked.connect(self.start_taking_photos)
-        self.saveButton.clicked.connect(self.save_photos)
-        self.saveButton.setDisabled(True)
+        self.startButton.clicked.connect(self.begin_photo_session)
+        self.selectButton.clicked.connect(self.confirm_photo_selection)
+        self.selectButton.setDisabled(True)
 
-        self.thread = VideoThread()
-        self.thread.change_frame_signal.connect(self.update_frame)
-        self.thread.start()
+        self.video_thread = VideoCaptureThread()
+        self.video_thread.frame_updated_signal.connect(self.update_frame)
+        self.video_thread.start()
 
-        self.current_frame = None
-        self.camera_timer = QTimer(self)
-        self.camera_timer.setInterval(self.shot_interval)
-        self.camera_timer.timeout.connect(self.take_photo)
+        self.video_frame = None
+        self.photo_timer = QTimer(self)
+        self.photo_timer.setInterval(self.photo_shot_interval)
+        self.photo_timer.timeout.connect(self.capture_photo)
 
-        self.photos = []
-        self.selected_indexes = []
+        self.captured_photos = []
+        self.selected_photo_indexes = []
         self.photo_buttons = []
 
         self.countdown_timer = QTimer(self)
         self.countdown_timer.setInterval(1000)
         self.countdown_timer.timeout.connect(self.count_seconds)
-        self.countdown_seconds = 0
+        self.countdown_value = 0
 
-        self.effect = QSoundEffect()
-        audio_file = os.path.join(assets_folder, "camera.wav")
-        self.effect.setSource(QUrl.fromLocalFile(audio_file))
-        self.effect.setLoopCount(0)
-        self.effect.setVolume(0.7)
+        self.shutter_sound_effect = QSoundEffect()
+        audio_file = os.path.join(assets_dir, "camera.wav")
+        self.shutter_sound_effect.setSource(QUrl.fromLocalFile(audio_file))
+        self.shutter_sound_effect.setLoopCount(0)
+        self.shutter_sound_effect.setVolume(0.7)
+
+        frame_file = os.path.join(assets_dir, "frame.png")
+        self.result_image = cv2.imread(frame_file, cv2.IMREAD_COLOR)
+        self.filterButton_1.clicked.connect(self.apply_color_filter)
+        self.filterButton_2.clicked.connect(self.apply_gray_filter)
+        mask_file = os.path.join(assets_dir, "mask.png")
+        self.mask_image = cv2.imread(mask_file, cv2.IMREAD_UNCHANGED)
+        self.filterButton_3.clicked.connect(self.apply_daegun_filter)
+        self.saveButton.clicked.connect(self.save_result_image)
+
+    def closeEvent(self, event):
+        self.video_thread.stop()
+        event.accept()
 
     def switch_to_camera_page(self):
         self.navCamera.setChecked(True)
         self.stackedWidget.setCurrentIndex(0)
 
-    def switch_to_result_page(self):
-        self.navResult.setChecked(True)
+    def switch_to_select_page(self):
+        self.navSelect.setChecked(True)
         self.stackedWidget.setCurrentIndex(1)
 
-    def closeEvent(self, event):
-        self.thread.stop()
-        event.accept()
+    def switch_to_result_page(self):
+        self.navResult.setChecked(True)
+        self.stackedWidget.setCurrentIndex(2)
 
     @Slot(np.ndarray)
     def update_frame(self, frame):
-        self.current_frame = frame
+        self.video_frame = frame
         height = self.videoLabel.height()
-        qt_img = convert_cv_to_qt(frame, height)
+        qt_img = convert_cv_image_to_qt(frame, height)
 
-        if self.countdown_seconds > 0:
+        if self.countdown_value > 0:
             painter = QPainter(qt_img)
 
-            pen = QPen(QColor(255, 255, 255))
+            pen = QPen(QColor(255, 255, 255, 127))
             painter.setPen(pen)
 
             font = painter.font()
@@ -176,104 +202,151 @@ class FourCutWindow(QMainWindow, Ui_MainWindow):
             painter.drawText(
                 qt_img.rect(),
                 Qt.AlignmentFlag.AlignCenter,
-                str(self.countdown_seconds)
+                str(self.countdown_value)
             )
             
             painter.end()
 
         self.videoLabel.setPixmap(qt_img)
 
-    def start_taking_photos(self):
-        while self.gridLayout.count():
-            child = self.gridLayout.takeAt(0)
+    def begin_photo_session(self):
+        self.switch_to_camera_page()
+
+        while self.selectLayout.count():
+            child = self.selectLayout.takeAt(0)
             child.widget().deleteLater()
 
-        self.saveButton.setDisabled(True)
-        self.photos.clear()
+        self.selected_photo_indexes.clear()
+        self.selectButton.setDisabled(True)
+        self.captured_photos.clear()
         self.photo_buttons.clear()
 
         self.startButton.setDisabled(True)
-        self.camera_timer.start()
-        self.start_countdown()
+        self.photo_timer.start()
+        self.initiate_countdown()
 
-    def take_photo(self):
-        self.photos.append(self.current_frame)
-        self.effect.play()
-        self.start_countdown()
+    def capture_photo(self):
+        self.captured_photos.append(self.video_frame)
+        self.shutter_sound_effect.play()
+        white_screen = np.full_like(self.video_frame, 255)
+        height = self.videoLabel.height()
+        qt_white = convert_cv_image_to_qt(white_screen, height)
+        self.videoLabel.setPixmap(qt_white)
+        self.video_thread.blockSignals(True)
+        QTimer.singleShot(20, lambda: self.video_thread.blockSignals(False))
+        self.initiate_countdown()
 
-        if len(self.photos) >= self.total_photos:
-            self.camera_timer.stop()
-            self.show_result_photos()
+        if len(self.captured_photos) >= self.total_photos:
+            self.photo_timer.stop()
+            self.display_all_photos()
 
-    def start_countdown(self):
-        self.countdown_seconds = self.shot_interval // 1000
+    def initiate_countdown(self):
+        self.countdown_value = self.photo_shot_interval // 1000
         self.countdown_timer.start()
 
     def count_seconds(self):
-        self.countdown_seconds -= 1
-        if self.countdown_seconds == 0:
+        self.countdown_value -= 1
+        if self.countdown_value == 0:
             self.countdown_timer.stop()
 
-    def show_result_photos(self):
-        self.switch_to_result_page()
+    def display_all_photos(self):
+        self.switch_to_select_page()
 
-        for i in range(len(self.photos)):
-            row = i // self.number_of_columns
-            col = i % self.number_of_columns
+        for i in range(len(self.captured_photos)):
+            row = i // self.column_count
+            col = i % self.column_count
 
-            number_of_rows = self.total_photos / self.number_of_columns
-            height = self.widget.height() // number_of_rows
-            height -= self.gridLayout.verticalSpacing()
-            qt_img = convert_cv_to_qt(self.photos[i], height)
+            rows_needed = self.total_photos / self.column_count
+            height_per_photo = self.widget.height() // rows_needed
+            height_per_photo -= self.selectLayout.verticalSpacing()
+            qt_photo = convert_cv_image_to_qt(self.captured_photos[i], height_per_photo)
 
-            photo_button = PhotoButton(qt_img, i)
-            photo_button.change_photos_signal.connect(self.update_photos)
-            self.gridLayout.addWidget(photo_button, row, col)
+            photo_button = SelectablePhotoButton(qt_photo, i)
+            photo_button.photo_selection_changed_signal.connect(self.update_photo_selection)
+            self.selectLayout.addWidget(photo_button, row, col)
             self.photo_buttons.append(photo_button)
 
         self.startButton.setDisabled(False)
 
     @Slot(np.ndarray, bool)
-    def update_photos(self, index, adding):
-        if adding:
-            self.selected_indexes.append(index)
+    def update_photo_selection(self, photo_index, is_selected):
+        if is_selected:
+            self.selected_photo_indexes.append(photo_index)
         else:
-            self.selected_indexes.remove(index)
+            self.selected_photo_indexes.remove(photo_index)
 
-        for i in range(len(self.selected_indexes)):
-            btn = self.selected_indexes[i]
-            self.photo_buttons[btn].setSelectIndex(i + 1)
+        for i, selected_index in enumerate(self.selected_photo_indexes):
+            self.photo_buttons[selected_index].set_selected_index(i + 1)
 
-        if len(self.selected_indexes) == self.total_cuts:
-            self.saveButton.setDisabled(False)
+        if len(self.selected_photo_indexes) == self.total_cuts:
+            self.selectButton.setDisabled(False)
         else:
-            self.saveButton.setDisabled(True)
+            self.selectButton.setDisabled(True)
 
-    def save_photos(self):
+    def confirm_photo_selection(self):
+        self.apply_color_filter()
+        self.switch_to_result_page()
+
+    def insert_photo_to_frame(self, photo, cut_number):
         w, h = 560, 720
-        pos_list = [(80, 160), (670, 160), (80, 910), (670, 910)]
+        points = [(80, 160), (670, 160),
+                  (80, 910), (670, 910)]
+        
+        x, y = points[cut_number]
+        photo_resized = cv2.resize(photo, (w, h), interpolation=cv2.INTER_CUBIC)
+        self.result_image[y:y+h, x:x+w] = photo_resized
 
-        frame_file = os.path.join(assets_folder, "frame.png")
-        frame_image = cv2.imread(frame_file, cv2.IMREAD_COLOR)
+    def display_result_image(self):
+        qt_img = convert_cv_image_to_qt(self.result_image, 560)
+        self.resultLabel.setPixmap(qt_img)
 
+    def apply_color_filter(self):
         for i in range(self.total_cuts):
-            x, y = pos_list[i]
-            photo_idx = self.selected_indexes[i]
-            photo = self.photos[photo_idx]
-            photo_resized = cv2.resize(photo, (w, h), interpolation=cv2.INTER_CUBIC)
-            frame_image[y:y+h, x:x+w] = photo_resized
+            photo_index = self.selected_photo_indexes[i]
+            photo = self.captured_photos[photo_index]
+            self.insert_photo_to_frame(photo, i)
+        self.display_result_image()
 
-        cv2.imwrite("result.png", frame_image)
+    def apply_gray_filter(self):
+        for i in range(self.total_cuts):
+            photo_index = self.selected_photo_indexes[i]
+            photo = self.captured_photos[photo_index]
+            photo = cv2.cvtColor(photo, cv2.COLOR_BGR2GRAY)
+            photo = cv2.cvtColor(photo, cv2.COLOR_GRAY2BGR)
+            self.insert_photo_to_frame(photo, i)
+        self.display_result_image()
 
-        for i in self.selected_indexes:
+    def apply_daegun_filter(self):
+        detector = FaceDetector(minDetectionCon=0.6, modelSelection=0)
+        for i in range(self.total_cuts):
+            photo_index = self.selected_photo_indexes[i]
+            photo = self.captured_photos[photo_index]
+            img, bboxs = detector.findFaces(photo.copy(), draw=False)
+            if bboxs is None:
+                continue
+            for bbox in bboxs:
+                x, y, w, h = bbox['bbox']
+                offset_y = int(h * 0.3)
+                x, y, w, h = adjust_scale(x, y, w, h, 0.6)
+                mask = cv2.resize(self.mask_image, (w, h))
+                img = cvzone.overlayPNG(img, mask, pos=[x, y - offset_y])
+            self.insert_photo_to_frame(img, i)
+        self.display_result_image()
+
+    def save_result_image(self):
+        cv2.imwrite("result.png", self.result_image)
+
+        for i in self.selected_photo_indexes:
             self.photo_buttons[i].blockSignals(True)
             self.photo_buttons[i].setChecked(False)
-            self.photo_buttons[i].setSelectIndex(None)
+            self.photo_buttons[i].set_selected_index(None)
             self.photo_buttons[i].blockSignals(False)
 
-        self.selected_indexes.clear()
-        self.saveButton.setDisabled(True)
+        self.selected_photo_indexes.clear()
+        self.selectButton.setDisabled(True)
         self.switch_to_camera_page()
+
+        # TODO: send file to server or printer
 
 
 if __name__ == "__main__":
