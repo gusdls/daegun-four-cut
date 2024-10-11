@@ -90,14 +90,10 @@ class Ui_MainWindow(object):
         font2.setBold(True)
         self.selectButton.setFont(font2)
         self.selectButton.setStyleSheet(u"QPushButton {\n"
-"	background-color: #ffee93;\n"
+"	background-color: #B3C5D7;\n"
 "	color: white;\n"
 "	border: none;\n"
 "	border-radius: 4px;\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"	background-color: #ffeb7f;\n"
 "}\n"
 "\n"
 "QPushButton:disabled {\n"
@@ -138,13 +134,12 @@ class Ui_MainWindow(object):
         self.widget_2 = QWidget(self.resultPage)
         self.widget_2.setObjectName(u"widget_2")
         self.widget_2.setStyleSheet(u"QPushButton {\n"
-"	background-color: #ffc09f;\n"
-"	border: 3px solid #ffc09f;\n"
+"	background-color: #C5D5EA;\n"
 "	border-radius: 8px;\n"
 "}\n"
 "\n"
 "QPushButton:checked {\n"
-"	background-color: #ffb28a;\n"
+"	background-color: #B3C5D7;\n"
 "}")
         self.gridLayout_8 = QGridLayout(self.widget_2)
         self.gridLayout_8.setObjectName(u"gridLayout_8")
@@ -217,14 +212,10 @@ class Ui_MainWindow(object):
         self.saveButton.setMaximumSize(QSize(110, 40))
         self.saveButton.setFont(font2)
         self.saveButton.setStyleSheet(u"QPushButton {\n"
-"	background-color: #51D161;\n"
+"	background-color: #759EB8;\n"
 "	color: white;\n"
 "	border: none;\n"
 "	border-radius: 4px;\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"	background-color: #31BC44;\n"
 "}\n"
 "\n"
 "QPushButton:disabled {\n"
@@ -251,7 +242,7 @@ class Ui_MainWindow(object):
         self.sidebar = QWidget(self.centralwidget)
         self.sidebar.setObjectName(u"sidebar")
         self.sidebar.setStyleSheet(u"QWidget {\n"
-"	background-color: #ffee93;\n"
+"	background-color: #B3C5D7;\n"
 "	padding-right: 10px;\n"
 "}\n"
 "\n"
@@ -272,12 +263,12 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QPushButton:hover {\n"
-"	background-color: #fff1a9;\n"
+"	background-color: #C5D5EA;\n"
 "}\n"
 "\n"
 "QPushButton:checked {\n"
 "	background-color: white;\n"
-"	color: #ffee93;\n"
+"	color: #B3C5D7;\n"
 "	font-weight: bold;\n"
 "}")
         self.verticalLayout_2 = QVBoxLayout(self.sidebar)

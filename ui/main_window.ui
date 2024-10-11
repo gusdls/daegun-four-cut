@@ -156,14 +156,10 @@
              </property>
              <property name="styleSheet">
               <string notr="true">QPushButton {
-	background-color: #ffee93;
+	background-color: #B3C5D7;
 	color: white;
 	border: none;
 	border-radius: 4px;
-}
-
-QPushButton:pressed {
-	background-color: #ffeb7f;
 }
 
 QPushButton:disabled {
@@ -251,13 +247,12 @@ QPushButton:disabled {
             <widget class="QWidget" name="widget_2" native="true">
              <property name="styleSheet">
               <string notr="true">QPushButton {
-	background-color: #ffc09f;
-	border: 3px solid #ffc09f;
+	background-color: #C5D5EA;
 	border-radius: 8px;
 }
 
 QPushButton:checked {
-	background-color: #ffb28a;
+	background-color: #B3C5D7;
 }</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_8">
@@ -444,14 +439,10 @@ QPushButton:checked {
                 </property>
                 <property name="styleSheet">
                  <string notr="true">QPushButton {
-	background-color: #51D161;
+	background-color: #759EB8;
 	color: white;
 	border: none;
 	border-radius: 4px;
-}
-
-QPushButton:pressed {
-	background-color: #31BC44;
 }
 
 QPushButton:disabled {
@@ -490,7 +481,7 @@ QPushButton:disabled {
      <widget class="QWidget" name="sidebar" native="true">
       <property name="styleSheet">
        <string notr="true">QWidget {
-	background-color: #ffee93;
+	background-color: #B3C5D7;
 	padding-right: 10px;
 }
 
@@ -511,12 +502,12 @@ QPushButton#startButton {
 }
 
 QPushButton:hover {
-	background-color: #fff1a9;
+	background-color: #C5D5EA;
 }
 
 QPushButton:checked {
 	background-color: white;
-	color: #ffee93;
+	color: #B3C5D7;
 	font-weight: bold;
 }</string>
       </property>
