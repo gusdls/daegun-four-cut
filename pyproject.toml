@@ -10,6 +10,11 @@ python = ">=3.9,<3.13"
 opencv-python = "^4.10.0.84"
 PySide6 = "6.7.0"
 cvzone = "^1.6.1"
+mediapipe = "^0.10.15"
+requests = "^2.32.3"
+supabase = "^2.9.0"
+qrcode = "^8.0"
+pillow = "^10.4.0"
 
 
 [build-system]

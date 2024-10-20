@@ -1,10 +1,12 @@
 import os
 import sys
+import time
 
 import cv2
 import cvzone
 from cvzone.FaceDetectionModule import FaceDetector
 import numpy as np
+from supabase import create_client, Client
 
 from PySide6.QtWidgets import QApplication, QMainWindow, QAbstractButton
 from PySide6.QtCore import Qt, QThread, Signal, Slot, QTimer, QUrl
@@ -15,6 +17,10 @@ from ui.main_window import Ui_MainWindow
 
 current_path = os.path.dirname(__file__)
 assets_dir = os.path.join(current_path, "assets")
+
+url: str = os.environ.get("SUPABASE_URL")
+key: str = os.environ.get("SUPABASE_KEY")
+supabase: Client = create_client(url, key)
 
 
 def convert_cv_image_to_qt(cv_img, height):
@@ -346,7 +352,16 @@ class FourCutWindow(QMainWindow, Ui_MainWindow):
         self.selectButton.setDisabled(True)
         self.switch_to_camera_page()
 
-        # TODO: send file to server or printer
+        photo_id = int(time.time() * 1000)
+        self.upload_image_to_db(photo_id)
+
+        # TODO: add qrcode on image
+        # TODO: print the image
+
+    def upload_image_to_db(self, photo_id):
+        with open("result.png", 'rb') as file:
+            file_path = f"uploads/{photo_id}.png"
+            supabase.storage.from_("photos").upload(file_path, file, {"content-type": "image/png"})
 
 
 if __name__ == "__main__":
