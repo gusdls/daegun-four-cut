@@ -17,7 +17,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QGridLayout, QLabel, QLayout,
     QMainWindow, QPushButton, QSizePolicy, QSpacerItem,
-    QStackedWidget, QVBoxLayout, QWidget)
+    QSpinBox, QStackedWidget, QVBoxLayout, QWidget)
 from . import resources_rc
 
 class Ui_MainWindow(object):
@@ -180,6 +180,14 @@ class Ui_MainWindow(object):
         self.filterButton_3.setAutoExclusive(True)
 
         self.verticalLayout_4.addWidget(self.filterButton_3)
+
+        self.copyCountInput = QSpinBox(self.widget_2)
+        self.copyCountInput.setObjectName(u"copyCountInput")
+        self.copyCountInput.setWrapping(False)
+        self.copyCountInput.setFrame(True)
+        self.copyCountInput.setMinimum(1)
+
+        self.verticalLayout_4.addWidget(self.copyCountInput)
 
 
         self.gridLayout_8.addLayout(self.verticalLayout_4, 0, 0, 1, 1)

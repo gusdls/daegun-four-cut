@@ -369,6 +369,19 @@ QPushButton:checked {
                   </property>
                  </widget>
                 </item>
+                <item>
+                 <widget class="QSpinBox" name="copyCountInput">
+                  <property name="wrapping">
+                   <bool>false</bool>
+                  </property>
+                  <property name="frame">
+                   <bool>true</bool>
+                  </property>
+                  <property name="minimum">
+                   <number>1</number>
+                  </property>
+                 </widget>
+                </item>
                </layout>
               </item>
              </layout>

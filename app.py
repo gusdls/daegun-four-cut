@@ -1,19 +1,28 @@
 import os
 import sys
 import time
+import logging
 
 import cv2
 import cvzone
 from cvzone.FaceDetectionModule import FaceDetector
 import numpy as np
 from supabase import create_client, Client
+import qrcode
+from PIL import Image
 
 from PySide6.QtWidgets import QApplication, QMainWindow, QAbstractButton
 from PySide6.QtCore import Qt, QThread, Signal, Slot, QTimer, QUrl
-from PySide6.QtGui import QImage, QPixmap, QPainter, QPainterPath, QPen, QColor
+from PySide6.QtGui import QImage, QPixmap, QPainter, QPainterPath, QPen, QColor, QPageSize, QPageLayout
 from PySide6.QtMultimedia import QSoundEffect
+from PySide6.QtPrintSupport import QPrinter, QPrinterInfo
 
 from ui.main_window import Ui_MainWindow
+
+logging.basicConfig(
+    format='%(asctime)s %(levelname)s:%(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+)
 
 current_path = os.path.dirname(__file__)
 assets_dir = os.path.join(current_path, "assets")
@@ -353,15 +362,57 @@ class FourCutWindow(QMainWindow, Ui_MainWindow):
         self.switch_to_camera_page()
 
         photo_id = int(time.time() * 1000)
-        self.upload_image_to_db(photo_id)
+        self.upload_image(photo_id)
+        self.insert_qrcode(photo_id)
+        self.print_image(self.copyCountInput.value())
 
-        # TODO: add qrcode on image
-        # TODO: print the image
-
-    def upload_image_to_db(self, photo_id):
-        with open("result.png", 'rb') as file:
+    def upload_image(self, photo_id):
+        with open("result.png", "rb") as file:
             file_path = f"uploads/{photo_id}.png"
             supabase.storage.from_("photos").upload(file_path, file, {"content-type": "image/png"})
+
+    def insert_qrcode(self, photo_id):
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+        qr.add_data("https://localhost:3000/photos/" + str(photo_id))
+        qr.make(fit=True)
+        qr_img = qr.make_image(fill_color="black", back_color="#fafafa")
+        qr_img = qr_img.resize((200, 200))
+
+        img = Image.open("result.png")
+        img.paste(qr_img, (60, 1665))
+        img.save("result.png")
+
+    def print_image(self, copy_count):
+        default_printer = QPrinterInfo.defaultPrinter()
+        if default_printer.isNull():
+            logging.error("연결된 프린터가 없습니다.")
+            return False
+        
+        logging.info(f"연결된 프린터: {QPrinterInfo.defaultPrinterName()}")
+
+        printer = QPrinter(default_printer, mode=QPrinter.PrinterMode.HighResolution)
+        printer.setCopyCount(copy_count)
+        printer.setPageSize(QPageSize.PageSizeId.A4)
+        printer.setPageOrientation(QPageLayout.Orientation.Portrait)
+        printer.setResolution(96)
+        
+        img = QImage("result.png")
+        scaled_img = img.scaled(
+            printer.pageRect(QPrinter.Unit.DevicePixel).width(),
+            printer.pageRect(QPrinter.Unit.DevicePixel).height(),
+            aspectMode=Qt.AspectRatioMode.KeepAspectRatio,
+            mode=Qt.TransformationMode.SmoothTransformation,
+        )
+
+        painter = QPainter()
+        painter.begin(printer)
+        painter.drawImage(0, 0, scaled_img)
+        painter.end()
 
 
 if __name__ == "__main__":
