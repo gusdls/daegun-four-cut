@@ -174,11 +174,6 @@ class FourCutWindow(QMainWindow, Ui_MainWindow):
 
         frame_file = os.path.join(assets_dir, "frame.png")
         self.result_image = cv2.imread(frame_file, cv2.IMREAD_COLOR)
-        self.filterButton_1.clicked.connect(self.apply_color_filter)
-        self.filterButton_2.clicked.connect(self.apply_gray_filter)
-        mask_file = os.path.join(assets_dir, "mask.png")
-        self.mask_image = cv2.imread(mask_file, cv2.IMREAD_UNCHANGED)
-        self.filterButton_3.clicked.connect(self.apply_daegun_filter)
         self.saveButton.clicked.connect(self.save_result_image)
 
     def closeEvent(self, event):
@@ -299,13 +294,13 @@ class FourCutWindow(QMainWindow, Ui_MainWindow):
             self.selectButton.setDisabled(True)
 
     def confirm_photo_selection(self):
-        self.apply_color_filter()
+        self.create_photos()
         self.switch_to_result_page()
 
     def insert_photo_to_frame(self, photo, cut_number):
-        w, h = 560, 720
-        points = [(80, 160), (670, 160),
-                  (80, 910), (670, 910)]
+        w, h = 1120, 1440
+        points = [(160, 320), (1340, 320),
+                  (160, 1820), (1340, 1820)]
         
         x, y = points[cut_number]
         photo_resized = cv2.resize(photo, (w, h), interpolation=cv2.INTER_CUBIC)
@@ -315,37 +310,11 @@ class FourCutWindow(QMainWindow, Ui_MainWindow):
         qt_img = convert_cv_image_to_qt(self.result_image, 560)
         self.resultLabel.setPixmap(qt_img)
 
-    def apply_color_filter(self):
+    def create_photos(self):
         for i in range(self.total_cuts):
             photo_index = self.selected_photo_indexes[i]
             photo = self.captured_photos[photo_index]
             self.insert_photo_to_frame(photo, i)
-        self.display_result_image()
-
-    def apply_gray_filter(self):
-        for i in range(self.total_cuts):
-            photo_index = self.selected_photo_indexes[i]
-            photo = self.captured_photos[photo_index]
-            photo = cv2.cvtColor(photo, cv2.COLOR_BGR2GRAY)
-            photo = cv2.cvtColor(photo, cv2.COLOR_GRAY2BGR)
-            self.insert_photo_to_frame(photo, i)
-        self.display_result_image()
-
-    def apply_daegun_filter(self):
-        detector = FaceDetector(minDetectionCon=0.6, modelSelection=0)
-        for i in range(self.total_cuts):
-            photo_index = self.selected_photo_indexes[i]
-            photo = self.captured_photos[photo_index]
-            img, bboxs = detector.findFaces(photo.copy(), draw=False)
-            if bboxs is None:
-                continue
-            for bbox in bboxs:
-                x, y, w, h = bbox['bbox']
-                offset_y = int(h * 0.3)
-                x, y, w, h = adjust_scale(x, y, w, h, 0.6)
-                mask = cv2.resize(self.mask_image, (w, h))
-                img = cvzone.overlayPNG(img, mask, pos=[x, y - offset_y])
-            self.insert_photo_to_frame(img, i)
         self.display_result_image()
 
     def save_result_image(self):
@@ -378,13 +347,13 @@ class FourCutWindow(QMainWindow, Ui_MainWindow):
             box_size=10,
             border=4,
         )
-        qr.add_data("https://localhost:3000/photos/" + str(photo_id))
+        qr.add_data("https://four-cut.dgmanga.kr/photos/" + str(photo_id))
         qr.make(fit=True)
         qr_img = qr.make_image(fill_color="black", back_color="#fafafa")
-        qr_img = qr_img.resize((200, 200))
+        qr_img = qr_img.resize((400, 400))
 
         img = Image.open("result.png")
-        img.paste(qr_img, (60, 1665))
+        img.paste(qr_img, (70, 3330))
         img.save("result.png")
 
     def print_image(self, copy_count):
@@ -397,7 +366,7 @@ class FourCutWindow(QMainWindow, Ui_MainWindow):
 
         printer = QPrinter(default_printer, mode=QPrinter.PrinterMode.HighResolution)
         printer.setCopyCount(copy_count)
-        printer.setPageSize(QPageSize.PageSizeId.A4)
+        printer.setPageSize(QPageSize.PageSizeId.A6)
         printer.setPageOrientation(QPageLayout.Orientation.Portrait)
         printer.setResolution(96)
         

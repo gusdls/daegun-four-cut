@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_window.ui'
+## Form generated from reading UI file 'main_windowbrVmXW.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.7.0
 ##
@@ -147,42 +147,18 @@ class Ui_MainWindow(object):
         self.verticalLayout_4 = QVBoxLayout()
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
         self.verticalLayout_4.setSizeConstraint(QLayout.SizeConstraint.SetDefaultConstraint)
-        self.filterButton_1 = QPushButton(self.widget_2)
-        self.filterButton_1.setObjectName(u"filterButton_1")
-        self.filterButton_1.setMinimumSize(QSize(80, 80))
-        self.filterButton_1.setMaximumSize(QSize(80, 80))
-        font3 = QFont()
-        font3.setPointSize(16)
-        font3.setBold(True)
-        self.filterButton_1.setFont(font3)
-        self.filterButton_1.setCheckable(True)
-        self.filterButton_1.setChecked(True)
-        self.filterButton_1.setAutoExclusive(True)
+        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout_4.addWidget(self.filterButton_1)
-
-        self.filterButton_2 = QPushButton(self.widget_2)
-        self.filterButton_2.setObjectName(u"filterButton_2")
-        self.filterButton_2.setMinimumSize(QSize(80, 80))
-        self.filterButton_2.setMaximumSize(QSize(80, 80))
-        self.filterButton_2.setFont(font3)
-        self.filterButton_2.setCheckable(True)
-        self.filterButton_2.setAutoExclusive(True)
-
-        self.verticalLayout_4.addWidget(self.filterButton_2)
-
-        self.filterButton_3 = QPushButton(self.widget_2)
-        self.filterButton_3.setObjectName(u"filterButton_3")
-        self.filterButton_3.setMinimumSize(QSize(80, 80))
-        self.filterButton_3.setMaximumSize(QSize(80, 80))
-        self.filterButton_3.setFont(font3)
-        self.filterButton_3.setCheckable(True)
-        self.filterButton_3.setAutoExclusive(True)
-
-        self.verticalLayout_4.addWidget(self.filterButton_3)
+        self.verticalLayout_4.addItem(self.verticalSpacer_3)
 
         self.copyCountInput = QSpinBox(self.widget_2)
         self.copyCountInput.setObjectName(u"copyCountInput")
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.copyCountInput.sizePolicy().hasHeightForWidth())
+        self.copyCountInput.setSizePolicy(sizePolicy)
+        self.copyCountInput.setMinimumSize(QSize(80, 0))
         self.copyCountInput.setWrapping(False)
         self.copyCountInput.setFrame(True)
         self.copyCountInput.setMinimum(1)
@@ -293,11 +269,11 @@ class Ui_MainWindow(object):
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.navCamera = QPushButton(self.sidebar)
         self.navCamera.setObjectName(u"navCamera")
-        font4 = QFont()
-        font4.setFamilies([u".AppleSystemUIFont"])
-        font4.setPointSize(16)
-        font4.setBold(False)
-        self.navCamera.setFont(font4)
+        font3 = QFont()
+        font3.setFamilies([u".AppleSystemUIFont"])
+        font3.setPointSize(16)
+        font3.setBold(False)
+        self.navCamera.setFont(font3)
         self.navCamera.setStyleSheet(u"")
         self.navCamera.setCheckable(True)
         self.navCamera.setChecked(True)
@@ -307,10 +283,10 @@ class Ui_MainWindow(object):
 
         self.navSelect = QPushButton(self.sidebar)
         self.navSelect.setObjectName(u"navSelect")
-        font5 = QFont()
-        font5.setFamilies([u".AppleSystemUIFont"])
-        font5.setPointSize(16)
-        self.navSelect.setFont(font5)
+        font4 = QFont()
+        font4.setFamilies([u".AppleSystemUIFont"])
+        font4.setPointSize(16)
+        self.navSelect.setFont(font4)
         self.navSelect.setCheckable(True)
         self.navSelect.setAutoExclusive(True)
 
@@ -318,9 +294,9 @@ class Ui_MainWindow(object):
 
         self.navResult = QPushButton(self.sidebar)
         self.navResult.setObjectName(u"navResult")
-        font6 = QFont()
-        font6.setPointSize(16)
-        self.navResult.setFont(font6)
+        font5 = QFont()
+        font5.setPointSize(16)
+        self.navResult.setFont(font5)
         self.navResult.setCheckable(True)
         self.navResult.setAutoExclusive(True)
 
@@ -335,11 +311,11 @@ class Ui_MainWindow(object):
 
         self.startButton = QPushButton(self.sidebar)
         self.startButton.setObjectName(u"startButton")
-        font7 = QFont()
-        font7.setFamilies([u".AppleSystemUIFont"])
-        font7.setPointSize(14)
-        font7.setBold(True)
-        self.startButton.setFont(font7)
+        font6 = QFont()
+        font6.setFamilies([u".AppleSystemUIFont"])
+        font6.setPointSize(14)
+        font6.setBold(True)
+        self.startButton.setFont(font6)
         self.startButton.setStyleSheet(u"")
         icon = QIcon()
         icon.addFile(u":/assets/camera.png", QSize(), QIcon.Normal, QIcon.Off)
@@ -367,9 +343,6 @@ class Ui_MainWindow(object):
         self.label.setText(QCoreApplication.translate("MainWindow", u"\u00a9 2024 DaegunManga - All Rights Reserved.", None))
         self.videoLabel.setText("")
         self.selectButton.setText(QCoreApplication.translate("MainWindow", u"Next", None))
-        self.filterButton_1.setText(QCoreApplication.translate("MainWindow", u"F1", None))
-        self.filterButton_2.setText(QCoreApplication.translate("MainWindow", u"F2", None))
-        self.filterButton_3.setText(QCoreApplication.translate("MainWindow", u"F3", None))
         self.resultLabel.setText("")
         self.saveButton.setText(QCoreApplication.translate("MainWindow", u"Save", None))
         self.logoLabel.setText("")
