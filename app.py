@@ -11,6 +11,9 @@ from supabase import create_client, Client
 import qrcode
 from PIL import Image
 
+from dotenv import load_dotenv
+load_dotenv()
+
 from PySide6.QtWidgets import QApplication, QMainWindow, QAbstractButton
 from PySide6.QtCore import Qt, QThread, Signal, Slot, QTimer, QUrl
 from PySide6.QtGui import QImage, QPixmap, QPainter, QPainterPath, QPen, QColor, QPageSize, QPageLayout
